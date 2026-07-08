@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gilly Chat 💜</title>
+  <link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"> 
+<style>
+html, body { height: 100%; margin: 0; padding: 0; }
+body {
+  font-family: 'Playfair Display', serif;
+  background: linear-gradient(to bottom, #D8BFD8, #8A2BE2);
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h1 { font-family: 'Great Vibes', cursive; color: white; font-size: 40px; margin: 15px 0 5px 0; text-shadow: 2px 2px 6px rgba(138, 43, 226, 0.4); }
+.status { color: #90EE90; font-size: 12px; margin-bottom: 10px; font-weight: bold; }
+.chat-container {
+  background: white;
+  width: 95%;
+  max-width: 500px;
+  height: 75vh;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(138,43,226,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#chatBox { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.message { padding: 10px 14px; border-radius: 15px; max-width: 75%; word-wrap: break-word; font-size: 15px; }
+.me { background: #8A2BE2; color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
+.other { background: #D8BFD8; color: #4B0082; align-self: flex-start; border-bottom-left-radius: 5px; }
+.input-area { display: flex; padding: 12px; border-top: 2px solid #D8BFD8; background: #f9f5ff; }
+#messageInput { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #D8BFD8; font-size: 16px; outline: none; font-family: 'Playfair Display', serif; }
+#sendBtn { margin-left: 10px; padding: 12px 20px; border-radius: 12px; border: none; background: #8A2BE2; color: white; font-weight: bold; cursor: pointer; }
+#sendBtn:hover { background: #4B0082; }
+.info { text-align: center; color: white; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h1>Gilly Chat 💜</h1>
+<p class="info"><span id="userName"></span> chatting with <span id="friendName"></span></p>
+<p class="status" id="status">Connecting...</p>
+
+<div class="chat-container">
+  <div id="chatBox"></div>
+  <div class="input-area">
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button id="sendBtn">Send</button>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+// ====== YOUR FIREBASE CONFIG ======
+const firebaseConfig = {
+  databaseURL: "https://chat-me-549eb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ====== GET USER INFO ======
+const myName = localStorage.getItem("userName") || "You";
+const myReg = localStorage.getItem("userReg") || "000";
+const friendName = localStorage.getItem("friendName") || "Friend";
+const friendReg = localStorage.getItem("friendReg") || "000";
+
+document.getElementById("userName").innerText = myName;
+document.getElementById("friendName").innerText = friendName;
+
+// ====== CREATE SAME ROOM FOR BOTH DEVICES ======
+const roomCode = myReg < friendReg ? `${myReg}_${friendReg}` : `${friendReg}_${myReg}`;
+const chatRef = db.ref("rooms/" + roomCode + "/messages");
+
+// ====== CONNECTION STATUS ======
+db.ref(".info/connected").on("value", (snap) => {
+  const status = document.getElementById("status");
+  if(snap.val()) {
+    status.innerText = "Online";
+    status.style.color = "#90EE90";
+  } else {
+    status.innerText = "Offline - reconnecting...";
+    status.style.color = "red";
+  }
+});
+
+// ====== SEND MESSAGE ======
+document.getElementById("sendBtn").onclick = sendMessage;
+document.getElementById("messageInput").addEventListener("keypress", e => { if(e.key === "Enter") sendMessage(); });
+
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const text = input.value.trim();
+  if (text === "") return;
+  chatRef.push({ name: myName, text: text, time: Date.now() });
+  input.value = "";
+}
+
+// ====== RECEIVE MESSAGE LIVE ======
+chatRef.on("child_added", (snapshot) => {
+  const msg = snapshot.val();
+  const chatBox = document.getElementById("chatBox");
+  const div = document.createElement("div");
+  div.classList.add("message");
+  div.classList.add(msg.name === myName ? "me" : "other");
+  div.innerHTML = `<b>${msg.name}:</b> ${msg.text}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+</script>
+  <script>
+  if('serviceworker' in navigator){navigator.serviceworker.register('service-worker.js');}</script>
+
+</body>
+</html>

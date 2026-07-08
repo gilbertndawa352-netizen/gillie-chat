@@ -1,0 +1,18 @@
+json
+{
+  "name": "Purple Chat ",
+  "short_name": "PurpleChat",
+  "description": "Chat app with purple vibes",
+  "start_url": "talk.html",
+  "display": "standalone",
+  "background_color": "#D8BFD8",
+  "theme_color": "#8A2BE2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
