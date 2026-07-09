@@ -107,7 +107,7 @@ button:active {
   <label>Friend's Register No</label>
   <input type="number" id="friendReg" placeholder="e.g. 1002" required>
 
-  <a href="lets talk.html"><button onclick="register()">Start Chat</button></a>
+<button onclick="register()">Start Chat</button>
 </div>
 
 <script>
@@ -129,11 +129,11 @@ function register() {
   localStorage.setItem("friendReg", friendReg);
 
   // Go to chat page
-  window.location.href = "chat.html";
+  window.location.href = "lets talk.html";
 }
 </script>
   <script>
-  if('serviceworker' in navigator){navigator.serviceworker.register('service-worker.js');}</script>
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js');}</script>
 
 </body>
 </html>
