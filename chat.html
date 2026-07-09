@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Chats</title>
+<style>
+body { font-family: 'Playfair Display', serif; background: linear-gradient(to bottom, #D8BFD8, #8A2BE2); padding: 20px; }
+h1 { color: white; text-align: center; font-family: 'Great Vibes', cursive; font-size: 40px; }
+.chat-list { background: white; border-radius: 20px; padding: 15px; }
+.contact { padding: 15px; border-bottom: 1px solid #D8BFD8; cursor: pointer; }
+.contact:hover { background: #f9f5ff; }
+.add { margin-top: 15px; display: flex; gap: 10px; }
+.add input { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #D8BFD8; }
+.add button { padding: 10px 15px; background: #8A2BE2; color: white; border: none; border-radius: 10px; }
+</style>
+</head>
+<body>
+<h1>💜 My Chats</h1>
+<div class="chat-list" id="chatList"></div>
+
+<div class="add">
+<input type="text" id="friendName" placeholder="Friend Name">
+<input type="number" id="friendReg" placeholder="Friend Reg">
+<button onclick="addFriend()">Add Chat</button>
+</div>
+
+<script>
+const myReg = localStorage.getItem("userReg");
+let friends = JSON.parse(localStorage.getItem("friends_" + myReg)) || [];
+
+function showFriends() {
+  const list = document.getElementById("chatList");
+  list.innerHTML = "";
+  friends.forEach(f => {
+    list.innerHTML += `<div class="contact" onclick="openChat('${f.name}', '${f.reg}')"><b>${f.name}</b><br>Reg: ${f.reg}</div>`;
+  });
+}
+
+function addFriend() {
+  const name = document.getElementById("friendName").value;
+  const reg = document.getElementById("friendReg").value;
+  if(name && reg) {
+    friends.push({name, reg});
+    localStorage.setItem("friends_" + myReg, JSON.stringify(friends));
+    showFriends();
+  }
+}
+
+function openChat(name, reg) {
+  localStorage.setItem("chatWithName", name);
+  localStorage.setItem("chatWithReg", reg);
+  window.location.href = "lets chat.html";
+}
+
+showFriends();
+</script>
+</body>
+</html>
