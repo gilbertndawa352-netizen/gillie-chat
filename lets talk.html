@@ -71,8 +71,8 @@ const db = firebase.database();
 // ====== GET USER INFO ======
 const myName = localStorage.getItem("userName") || "You";
 const myReg = localStorage.getItem("userReg") || "000";
-const friendName = localStorage.getItem("friendName") || "Friend";
-const friendReg = localStorage.getItem("friendReg") || "000";
+const friendName = localStorage.getItem("chatwithname") || "Friend";
+const friendReg = localStorage.getItem("chatwithReg") || "000";
 
 document.getElementById("userName").innerText = myName;
 document.getElementById("friendName").innerText = friendName;
