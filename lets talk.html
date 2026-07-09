@@ -79,6 +79,7 @@ document.getElementById("friendName").innerText = friendName;
 
 // ====== CREATE SAME ROOM FOR BOTH DEVICES ======
 const roomCode = myReg < friendReg ? `${myReg}_${friendReg}` : `${friendReg}_${myReg}`;
+  console.log("Room code:",roomCode);
 const chatRef = db.ref("rooms/" + roomCode + "/messages");
 
 // ====== CONNECTION STATUS ======
